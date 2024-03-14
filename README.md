@@ -1,6 +1,11 @@
-# dsgn160-project
-DSGN 160: Designing with Experiments (Winter 2024)
+# Optimizing Customer Satisfaction: A DoorDash A/B Test Analysis
 
+Team Members: [Akhil Jagarlamudi](https://github.com/ajag3), [Arina Konnova](https://github.com/arinakonnova), [Maria Yakovlev](https://github.com/mariavy), [Yang Yu](https://github.com/yay019), [Baraa Zekeria](https://github.com/bzekeria)
+
+## Overview
+This project aims to analyze the impact of artificially changing wait times for DoorDash deliveries on customer satisfaction. By conducting an A/B test, we seek to determine if adjusting wait times influences customer satisfaction positively or negatively.
+
+## Getting Started 
 To get started with the project, follow these steps:
 1. Clone the repository:
      `git clone https://github.com/bzekeria/dsgn160-project.git`
