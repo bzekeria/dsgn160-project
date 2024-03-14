@@ -4,6 +4,7 @@
 ## calculates aggregated metrics, Customer Satisfaction Rating (CSR) and Delivery Time Variability (DTV),
 ## and creates two tables: one aggregated for all customers and one aggregated for each treatment level.
 
+install.packages("dplyr")
 library(dplyr)
 
 data <- read.csv("synthetic_experiment_data_group_yakovlev.csv")
@@ -36,3 +37,4 @@ metrics_table_treatment
 # Export tables as CSVs
 write.csv(metrics_table_all_customers, "metrics_all_customers.csv", row.names = FALSE)
 write.csv(metrics_table_treatment, "metrics_treatment_groups.csv", row.names = FALSE)
+
