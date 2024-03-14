@@ -1,7 +1,5 @@
 ##### DSGN 160 Project Code #####
 
-setwd("/Users/arina/DSGN_160") 
-
 install.packages("dplyr")
 install.packages("ggplot2")
 install.packages("sampling")
