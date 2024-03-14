@@ -32,3 +32,7 @@ metrics_table_treatment <- data %>%
   mutate(Group = as.character(Group))  # Convert Group column to character type
 
 metrics_table_treatment
+
+# Export tables as CSVs
+write.csv(metrics_table_all_customers, "metrics_all_customers.csv", row.names = FALSE)
+write.csv(metrics_table_treatment, "metrics_treatment_groups.csv", row.names = FALSE)
