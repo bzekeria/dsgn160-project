@@ -109,7 +109,7 @@ lm_robust_summary <- data.frame(
   t_value = lm_robust_coefficients[, 3]
 )
 
-deg_frdm_robust <- length(lm_robust$coefficients) - 1
+deg_frdm_robust <- length(lm_robust_model$coefficients) - 1
 
 lm_robust_summary$p_value <- pt(abs(lm_robust_summary$t_value), df = deg_frdm_robust, lower.tail = FALSE) * 2
 
@@ -124,5 +124,32 @@ lm_robust_summary
 #### buffer time percentage, and order cancellation remain insignificantly associated with satisfaction 
 #### levels. 
 
+## Visualizations
+
+tukey_df$stat_sig <- factor(tukey_df$stat_sig, levels = c("Yes", "No"))
+
+tukey_plot <- ggplot(tukey_df, aes(x = c("T1 - C", "T2 - C", "T3 - C",
+                                         "T2 - T1", "T3 - T1", "T3 - T2"), y = mean_diff, color = stat_sig)) +
+  geom_point(size = 3, position = position_dodge(width = 0.9)) +
+  geom_errorbar(aes(ymin = mean_diff - 1.96 * sqrt(p_value), ymax = mean_diff + 1.96 * sqrt(p_value)),
+                width = 0.2, position = position_dodge(width = 0.9)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(title = "Tukey's HSD: Mean Difference and 95% CI",
+       subtitle = "Satisfaction Scores",
+       y = "Mean Difference",
+       x = "Comparison",
+       color = "Statistical Significance") +
+  scale_color_manual(values = c("#2ca02c", "#d62728"), labels = c("Yes", "No")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+tukey_plot
 
 
+#### The wider confidence intervals observed in some pairwise comparisons reflect uncertainty in estimating 
+#### the mean differences between treatment groups. In our study, this uncertainty stems from variations in 
+#### treatment effects across different groups of customers and their responses to the treatments. These 
+#### wider intervals suggest that while there may be noticeable differences in customer satisfaction between 
+#### certain treatment pairs, the exact magnitude of these differences is less precisely estimated due to factors 
+#### such as sample variability (variation in the sampled data) or 
+#### heterogeneous treatment effects (differences in how treatments affect different customer groups).
