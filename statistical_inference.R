@@ -1,3 +1,10 @@
+
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("lmtest")
+install.packages("MASS")
+
+
 library(dplyr)
 library(ggplot2)
 library(lmtest)
