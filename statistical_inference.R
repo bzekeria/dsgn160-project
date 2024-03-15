@@ -14,6 +14,27 @@ library(MASS) # for robust regression
 df <- read.csv("synthetic_experiment_data_group_yakovlev.csv")
 
 # Statistical Inference
+mean_satisfaction <- mean(df$satisfaction)
+ci_satisfaction <- t.test(df$satisfaction)$conf.int
+
+cat("Estimated mean satisfaction score is", mean_satisfaction, "\n")
+cat("95% Confidence Interval for the mean satisfaction score is [", ci_satisfaction[1], ",", ci_satisfaction[2], "]\n")
+
+satisfaction_treatment1 <- df$satisfaction[df$Group == "treatment 1"]
+satisfaction_control <- df$satisfaction[df$Group == "control"]
+
+# Perform a t-test to compare the means of the two groups
+t_test_result <- t.test(satisfaction_treatment1, satisfaction_control, alternative = "two.sided")
+
+# Display the results
+cat("T-test results: p-value =", t_test_result$p.value, "\n")
+if(t_test_result$p.value < 0.05) {
+  cat("There is significant difference in satisfaction scores between treatment 1 and control groups.\n")
+} else {
+  cat("There is no significant difference in satisfaction scores between treatment 1 and control groups.\n")
+}
+
+
 
 ## Anova
 
