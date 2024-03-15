@@ -3,14 +3,11 @@
 # install.packages("dplyr")
 # install.packages("ggplot2")
 # install.packages("lmtest")
-# install.packages("MASS")
-# install.packages("reshape2")
 
 
 library(dplyr)
 library(ggplot2)
 library(lmtest)
-library(MASS) # for robust regression
 
 
 # Load Data
@@ -39,7 +36,14 @@ p_value
 
 tukey_result <- TukeyHSD(anova_result)
 
-tukey_df <- data.frame(mean_diff = tukey_result$`Group`[, "diff"], p_value = tukey_result$`Group`[, "p adj"])
+# Extract mean differences, p-values, lower bounds, and upper bounds
+tukey_df <- data.frame(
+  mean_diff = tukey_result$`Group`[, "diff"],
+  p_value = tukey_result$`Group`[, "p adj"],
+  lower_bound = tukey_result$`Group`[, "lwr"],
+  upper_bound = tukey_result$`Group`[, "upr"]
+)
+
 tukey_df$stat_sig <- ifelse(tukey_df$p_value < 0.05, "Yes", "No")
 
 #### From the results of Tukey's HSD test, we can conclude that treatments applied in groups 2 and 3 have led to 
@@ -88,45 +92,6 @@ plot(lm_model)
 #### Therefore, optimizing actual delivery times to align with 
 #### or surpass expected times is crucial for enhancing customer satisfaction in DoorDash's service model.
 
-## Test for heteroscedasticity using BP test (Breusch and Pagan)
-## https://www.statology.org/breusch-pagan-test/
-
-hetero_test <- bptest(lm_model)
-if (hetero_test$p.value < 0.05) {
-  print("Heteroscedasticity detected")
-}
-
-#### Since the heteroscedasticity is detected, we need to implement a robust regression method.
-
-
-## Robust Regression using Huber M-estimation
-## https://stats.oarc.ucla.edu/r/dae/robust-regression/
-
-lm_robust_model <- rlm(satisfaction ~ AvgWaitTime + BufferTimePercentage + actualDeliveryTime + expectedDeliveryTime + cancellation, data = df)
-
-lm_robust_coefficients <- summary(lm_robust_model)$coefficients
-
-lm_robust_summary <- data.frame(
-  estimate = lm_robust_coefficients[, 1],
-  std.Error = lm_robust_coefficients[, 2],
-  t_value = lm_robust_coefficients[, 3]
-)
-
-deg_frdm_robust <- length(lm_robust_model$coefficients) - 1
-
-lm_robust_summary$p_value <- pt(abs(lm_robust_summary$t_value), df = deg_frdm_robust, lower.tail = FALSE) * 2
-
-lm_robust_summary$sig_lvl <- ifelse(lm_robust_summary$p_value < 0.05, "p < 0.05", ifelse(lm_robust_summary$p_value < 0.1, "0.05 ≤ p < 0.1", ifelse(lm_robust_summary$p_value < 0.5, "0.1 ≤ p < 0.5", "p ≥ 0.5")))
-
-lm_robust_summary
-
-#### The robust regression analysis confirms the significance of longer actual delivery times on 
-#### customer satisfaction (β = -0.0370, p < 0.001). While the initial p-value for expected delivery 
-#### times was 0.036, indicating potential significance, it's now found to be 0.072, suggesting 
-#### inconclusive evidence in this context. Moreover, factors like average wait time, 
-#### buffer time percentage, and order cancellation remain insignificantly associated with satisfaction 
-#### levels. 
-
 ## Visualizations
 
 tukey_df$stat_sig <- factor(tukey_df$stat_sig, levels = c("Yes", "No"))
@@ -134,7 +99,7 @@ tukey_df$stat_sig <- factor(tukey_df$stat_sig, levels = c("Yes", "No"))
 tukey_plot <- ggplot(tukey_df, aes(x = c("T1 - C", "T2 - C", "T3 - C",
                                          "T2 - T1", "T3 - T1", "T3 - T2"), y = mean_diff, color = stat_sig)) +
   geom_point(size = 3, position = position_dodge(width = 0.9)) +
-  geom_errorbar(aes(ymin = mean_diff - 1.96 * sqrt(p_value), ymax = mean_diff + 1.96 * sqrt(p_value)),
+  geom_errorbar(aes(ymin = lower_bound, ymax = upper_bound),
                 width = 0.2, position = position_dodge(width = 0.9)) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   labs(title = "Tukey's HSD: Mean Difference and 95% CI",
