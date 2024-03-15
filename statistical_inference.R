@@ -1,16 +1,16 @@
 
-install.packages("dplyr")
-install.packages("ggplot2")
-install.packages("lmtest")
-install.packages("MASS")
-install.packages("reshape2")
+## Install packages if not already installed
+# install.packages("dplyr")
+# install.packages("ggplot2")
+# install.packages("lmtest")
+# install.packages("MASS")
+# install.packages("reshape2")
 
 
 library(dplyr)
 library(ggplot2)
 library(lmtest)
 library(MASS) # for robust regression
-library(reshape2)
 
 
 # Load Data
@@ -147,6 +147,8 @@ tukey_plot <- ggplot(tukey_df, aes(x = c("T1 - C", "T2 - C", "T3 - C",
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 tukey_plot
+
+ggsave("tukey_plot.png", plot = tukey_plot)
 
 
 #### The wider confidence intervals observed in some pairwise comparisons reflect uncertainty in estimating 
