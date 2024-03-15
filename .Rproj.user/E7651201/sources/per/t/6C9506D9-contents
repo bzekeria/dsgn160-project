@@ -16,13 +16,6 @@ project_data$Group[project_data$Group=="treatment 3"] <- "3"
 
 head(project_data)
 
-project_data_str <- project_data %>% mutate(Group = case_when
-    (Group == 0 ~ "control", Group == 1 ~ "5%", Group == 2 ~ "10%", Group == 3 ~ "15%"))
-satisfaction_bytreatment <- ggplot(project_data_str, aes(x = reorder(Group, satisfaction), y = satisfaction)) + 
-  geom_boxplot()
-satisfaction_bytreatment
-ggsave("satisfaction_boxplot.png", plot = satisfaction_bytreatment)
-
 # 1. Bar plot comparing average cancellation to buffer times
 #   Calculate average cancellation rate for each buffer time
 avg_cancel_buffer <- aggregate(cancellation ~ BufferTimePercentage, data = project_data, FUN = mean)
