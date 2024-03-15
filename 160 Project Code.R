@@ -46,5 +46,9 @@ customer_frequency <- project_data %>%
 # Returns new dataframe where each customerID from customer_frequency has information from original data frame
 customer_data <- inner_join(customer_frequency, project_data, by = "customerID")
 
-ggplot(data = customer_data, aes(x = Frequency, y = satisfaction)) +
+average_satisfaction <- customer_data %>%
+  group_by(Frequency) %>%
+  summarise(AverageSatisfaction = mean(satisfaction))
+
+ggplot(data = average_satisfaction, aes(x = Frequency, y = AverageSatisfaction)) +
   geom_bar(stat = "identity", fill = "coral")
